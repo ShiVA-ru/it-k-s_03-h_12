@@ -1,7 +1,9 @@
 import nodemailer from "nodemailer";
 import config from "../core/settings/config.js";
+import {injectable} from "inversify";
 
-export const emailAdapter = {
+@injectable()
+export class EmailAdapter {
 	async sendEmail(email: string, message: string) {
 		// Stub email sending in test environment to avoid external SMTP calls and failures.
 		if (process.env.NODE_ENV === "test") {
@@ -42,5 +44,5 @@ export const emailAdapter = {
 		} catch (e) {
 			console.error(e);
 		}
-	},
-};
+	}
+}

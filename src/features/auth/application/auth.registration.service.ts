@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import dayjs from "dayjs";
 import {inject, injectable} from "inversify";
-import {emailAdapter} from "../../../adapters/email.adapter.js";
+import {EmailAdapter} from "../../../adapters/email.adapter.js";
 import {ResultStatus} from "../../../core/types/result.code.js";
 import type {Result} from "../../../core/types/result.type.js";
 import {UsersService} from "../../users/application/users.service.js";
@@ -10,7 +10,7 @@ import type {UserInput} from "../../users/types/users.input.type.js";
 import type {RegistrationConfirmationCode} from "../types/confirmation.input.type.js";
 import type {RegistrationEmail} from "../types/email.input.type.js";
 import type {PasswordRecoveryInput} from "../types/new-pass.input.type.js";
-import {bcryptService} from "./bcrypt.service.js";
+import {BcryptService} from "./bcrypt.service.js";
 
 @injectable()
 export class RegistrationService {
@@ -19,6 +19,10 @@ export class RegistrationService {
 		private usersRepository: UsersRepository,
 		@inject(UsersService)
 		private usersService: UsersService,
+		@inject(EmailAdapter)
+		private emailAdapter: EmailAdapter,
+		@inject(BcryptService)
+		private bcryptService: BcryptService
 	) {}
 
 	async registration(dto: UserInput): Promise<Result<true>> {
@@ -76,10 +80,10 @@ export class RegistrationService {
 
 		if (!createdEntity.isEmailConfirmed) {
 			console.log("почта отправлена", createdEntity.isEmailConfirmed);
-			emailAdapter
+			this.emailAdapter
 				.sendEmail(
 					email,
-					`<h1>Thank for your registration</h1>
+					`<h1>Thanks for your registration</h1>
          <p>To finish registration please follow the link below:
             <a href='https://somesite.com/confirm-email?code=${createdEntity.confirmationCode}'>complete registration</a>
          </p>
@@ -183,7 +187,7 @@ export class RegistrationService {
 		const confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
 
 		console.log("почта отправлена", user.isEmailConfirmed);
-		emailAdapter
+		this.emailAdapter
 			.sendEmail(
 				email,
 				`<h1>Thank for your registration</h1>
@@ -235,7 +239,7 @@ export class RegistrationService {
 		const recoveryExpiration = dayjs().add(1, "hour").toISOString();
 
 		// console.log("почта отправлена", user.isEmailConfirmed);
-		emailAdapter
+		this.emailAdapter
 			.sendEmail(
 				email,
 				`<h1>Password recovery</h1>
@@ -286,7 +290,7 @@ export class RegistrationService {
 			};
 		}
 
-		user.password = await bcryptService.generateHash(newPassword);
+		user.password = await this.bcryptService.generateHash(newPassword);
 		user.recoveryCode = null;
 		user.recoveryCodeExpirationDate = null;
 

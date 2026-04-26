@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import { jwtService } from "../application/jwt.service.js";
+import {JwtService} from "../application/jwt.service.js";
 import {container} from "../../../composition-root.js";
 import {UsersService} from "../../users/application/users.service.js";
 
@@ -13,6 +13,7 @@ export const refreshTokenGuardMiddleware = async (
 	next: NextFunction,
 ) => {
 	const token = req.cookies.refreshToken;
+	const jwtService = container.get(JwtService);
 
 	if (!token) {
 		return res.sendStatus(HttpStatus.Unauthorized);

@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import { jwtService } from "../application/jwt.service.js";
+import { JwtService } from "../application/jwt.service.js";
+import {container} from "../../../composition-root.js";
 
 export const accessTokenGuardMiddleware = async (
 	req: Request,
@@ -13,6 +14,7 @@ export const accessTokenGuardMiddleware = async (
 		return;
 	}
 
+	const jwtService = container.get(JwtService);
 	const [authType, token] = req.headers.authorization.split(" ");
 
 	if (authType !== "Bearer") {

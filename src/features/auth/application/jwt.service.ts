@@ -7,8 +7,10 @@ import type {
 	AccessTokenPayload,
 	RefreshTokenPayload,
 } from "../types/token-payload.type.js";
+import {injectable} from "inversify";
 
-export const jwtService = {
+@injectable()
+export class JwtService {
 	async generateTokens(
 		userId: string,
 		deviceId: string,
@@ -42,7 +44,7 @@ export const jwtService = {
 				data: null,
 			};
 		}
-	},
+	}
 
 	async verifyAccessToken(
 		token: string,
@@ -68,7 +70,7 @@ export const jwtService = {
 				data: null,
 			};
 		}
-	},
+	}
 
 	async verifyRefreshToken(
 		token: string,
@@ -94,5 +96,5 @@ export const jwtService = {
 				data: null,
 			};
 		}
-	},
-};
+	}
+}

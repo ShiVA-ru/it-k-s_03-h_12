@@ -9,8 +9,8 @@ import { mapEntityToViewModel } from "../../users/repositories/mappers/users.ent
 import { UsersRepository } from "../../users/repositories/users.repository.js";
 import type { UserView } from "../../users/types/users.view.type.js";
 import type { TokenPair } from "../types/token-pair.type.js";
-import { bcryptService } from "./bcrypt.service.js";
-import { jwtService } from "./jwt.service.js";
+import { BcryptService } from "./bcrypt.service.js";
+import { JwtService } from "./jwt.service.js";
 
 @injectable()
 export class AuthService {
@@ -21,6 +21,10 @@ export class AuthService {
 		private usersRepository: UsersRepository,
 		@inject(DevicesService)
 		private devicesService: DevicesService,
+		@inject(BcryptService)
+		private bcryptService: BcryptService,
+		@inject(JwtService)
+		private jwtService: JwtService,
 	) {}
 
 	async loginUser(
@@ -64,7 +68,7 @@ export class AuthService {
 
 		const deviceId = createSessionResult.data.insertedId;
 
-		const tokensResult = await jwtService.generateTokens(userId, deviceId, now);
+		const tokensResult = await this.jwtService.generateTokens(userId, deviceId, now);
 
 		if (!isSuccessResult(tokensResult)) {
 			return {
@@ -123,7 +127,7 @@ export class AuthService {
 				data: null,
 			};
 
-		const checkPassword = await bcryptService.checkPassword(
+		const checkPassword = await this.bcryptService.checkPassword(
 			password,
 			user.password,
 		);
@@ -161,7 +165,7 @@ export class AuthService {
 			};
 		}
 
-		const tokensResult = await jwtService.generateTokens(userId, deviceId, now);
+		const tokensResult = await this.jwtService.generateTokens(userId, deviceId, now);
 
 		if (!isSuccessResult(tokensResult)) {
 			return {

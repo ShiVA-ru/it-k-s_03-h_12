@@ -23,8 +23,15 @@ import { UsersService } from "./features/users/application/users.service.js";
 import { UsersQueryRepository } from "./features/users/repositories/users.query.repository.js";
 import { UsersRepository } from "./features/users/repositories/users.repository.js";
 import { UsersController } from "./features/users/routers/users.controller.js";
+import {EmailAdapter} from "./adapters/email.adapter.js";
+import {BcryptService} from "./features/auth/application/bcrypt.service.js";
+import {JwtService} from "./features/auth/application/jwt.service.js";
 
 export const container: Container = new Container();
+
+container.bind(EmailAdapter).toSelf();
+container.bind(BcryptService).toSelf();
+container.bind(JwtService).toSelf();
 
 container.bind(CommentsRepository).toSelf();
 container.bind(CommentsQueryRepository).toSelf();
