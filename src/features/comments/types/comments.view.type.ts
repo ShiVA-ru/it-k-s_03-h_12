@@ -5,6 +5,6 @@ export type CommentView = {
 	id: string;
 	content: string;
 	commentatorInfo: CommentatorInfoType;
-	createdAt?: string;
+	createdAt: string;
 	likesInfo: LikesView;
 };

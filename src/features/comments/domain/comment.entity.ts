@@ -10,7 +10,7 @@ export enum LikeStatus {
 
 export type Like = {
 	userId: string;
-	status: LikeStatus;
+	status: LikeStatus.Like | LikeStatus.Dislike;
 }
 
 export type Comment = {
@@ -27,7 +27,7 @@ export type CommentDocument = HydratedDocument<Comment>;
 
 const LikeSchema = new mongoose.Schema<Like>({
 	userId: { type: String, required: true },
-	status: { type: String, default: LikeStatus.None },
+	status: { type: String },
 })
 
 const CommentatorInfoSchema = new mongoose.Schema<CommentatorInfoType>({
