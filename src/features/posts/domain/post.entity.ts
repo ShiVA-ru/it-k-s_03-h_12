@@ -20,7 +20,8 @@ const PostSchema = new mongoose.Schema<Post>({
 	content: { type: String, trim: true, required: true },
 	blogId: { type: String, required: true },
 	blogName: { type: String, required: true },
-	createdAt: { type: Date, default: Date.now },
+}, {
+	timestamps: true
 });
 
 export const PostModel = model<Post, PostModel>("Post", PostSchema);

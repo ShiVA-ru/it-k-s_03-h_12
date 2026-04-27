@@ -39,8 +39,9 @@ const CommentSchema = new mongoose.Schema<Comment>({
 	content: { type: String, trim: true, required: true },
 	postId: { type: String, required: true },
 	commentatorInfo: CommentatorInfoSchema,
-	createdAt: { type: Date, default: Date.now },
 	likes: { type: [LikeSchema], default: [] },
+}, {
+	timestamps: true
 });
 
 export const CommentModel = model<Comment, CommentModel>(

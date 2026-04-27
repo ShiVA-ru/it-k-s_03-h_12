@@ -17,8 +17,9 @@ const BlogSchema = new mongoose.Schema<Blog>({
 	name: { type: String, trim: true, required: true },
 	description: { type: String, trim: true, required: true },
 	websiteUrl: { type: String, trim: true, required: true },
-	createdAt: { type: Date, default: Date.now },
 	isMembership: { type: Boolean, default: false },
+}, {
+	timestamps: true
 });
 
 export const BlogModel = model<Blog, BlogModel>("Blog", BlogSchema);

@@ -22,11 +22,12 @@ const UserSchema = new mongoose.Schema<User>({
 	email: { type: String, trim: true, required: true }, //!TODO добавить unique: true
 	password: { type: String, trim: true, required: true },
 	isEmailConfirmed: { type: Boolean, required: true },
-	createdAt: { type: Date, default: Date.now }, //!TODO уточнить тип данных
 	confirmationCode: { type: String, default: null },
 	confirmationCodeExpirationDate: { type: String, default: null },
 	recoveryCode: { type: String, default: null },
 	recoveryCodeExpirationDate: { type: String, default: null },
+}, {
+	timestamps: true,
 });
 
 export const UserModel = model<User, UserModel>("User", UserSchema);
