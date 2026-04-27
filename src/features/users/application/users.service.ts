@@ -20,16 +20,17 @@ export class UsersService {
 	async create(
 		dto: UserInput,
 		isAdmin: boolean = false,
-	): Promise<Result<{ insertedId: string } | null>> {
+	): Promise<{ insertedId: string }> {
 		const { login, password, email } = dto;
 
 		const passwordHash = await this.bcryptService.generateHash(password);
-		const user = new UserModel(); //!TODO нужно ли указывать тип?
+		const user = new UserModel();
 
 		user.login = login;
 		user.email = email;
 		user.password = passwordHash;
 		user.isEmailConfirmed = isAdmin;
+
 		if (!isAdmin) {
 			user.confirmationCode = randomUUID();
 			user.confirmationCodeExpirationDate = dayjs()
@@ -38,17 +39,8 @@ export class UsersService {
 		}
 
 		const insertedId = await this.usersRepository.save(user);
-		console.log("insertedId", insertedId);
 
-		// const newEntity = new UserDb(login, email, passwordHash, isAdmin);
-
-		// const insertedId = await this.usersRepository.create(newEntity);
-
-		return {
-			status: ResultStatus.Success,
-			extensions: [],
-			data: { insertedId },
-		};
+		return { insertedId };
 	}
 
 	async deleteOneById(id: string): Promise<boolean> {

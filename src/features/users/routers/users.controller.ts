@@ -12,8 +12,6 @@ import type {
 	RequestWithParams,
 } from "../../../core/types/request.types.js";
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
-import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
-import { isSuccessResult } from "../../../core/utils/type-guards.js";
 import { UsersService } from "../application/users.service.js";
 import { UsersQueryRepository } from "../repositories/users.query.repository.js";
 import type { UserInput } from "../types/users.input.type.js";
@@ -45,7 +43,7 @@ export class UsersController {
 			res.status(HttpStatus.Ok).json(findEntity);
 		} catch (error) {
 			console.error(error);
-			res.sendStatus(HttpStatus.NotFound);
+			res.sendStatus(HttpStatus.InternalServerError);
 		}
 	}
 
@@ -55,10 +53,10 @@ export class UsersController {
 				locations: ["query"],
 			});
 
-			const blogsListOutput =
+			const usersListOutput =
 				await this.usersQueryRepository.findAll(queryData);
 
-			res.status(HttpStatus.Ok).json(blogsListOutput);
+			res.status(HttpStatus.Ok).json(usersListOutput);
 		} catch (error) {
 			console.error(error);
 			res.sendStatus(HttpStatus.InternalServerError);
@@ -70,16 +68,10 @@ export class UsersController {
 		res: Response<UserView | validationErrorType[]>,
 	) {
 		try {
-			const result = await this.usersService.create(req.body, true);
-
-			if (!isSuccessResult(result)) {
-				return res
-					.status(resultCodeToHttpException(result.status))
-					.send(result.extensions);
-			}
+			const { insertedId } = await this.usersService.create(req.body, true);
 
 			const createdEntity = await this.usersQueryRepository.findOneById(
-				result.data.insertedId,
+				insertedId,
 			);
 
 			if (!createdEntity) {
@@ -105,7 +97,7 @@ export class UsersController {
 			return res.sendStatus(HttpStatus.NoContent);
 		} catch (error) {
 			console.error(error);
-			res.sendStatus(HttpStatus.NotFound);
+			res.sendStatus(HttpStatus.InternalServerError);
 		}
 	}
 }

@@ -25,6 +25,7 @@ const config = {
   smtpPort: process.env.SMTP_PORT || 465,
   rateLimitInterval: process.env.RATE_LIMIT_INTERVAL || 10,
   rateLimitCount: process.env.RATE_LIMIT_COUNT || 5,
+  sendCodeEmailHost: process.env.SEND_CODE_EMAIL_HOST || "",
 };
 
 export default config;

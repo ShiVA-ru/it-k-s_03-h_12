@@ -11,6 +11,7 @@ import type {RegistrationConfirmationCode} from "../types/confirmation.input.typ
 import type {RegistrationEmail} from "../types/email.input.type.js";
 import type {PasswordRecoveryInput} from "../types/new-pass.input.type.js";
 import {BcryptService} from "./bcrypt.service.js";
+import config from "../../../core/settings/config.js";
 
 @injectable()
 export class RegistrationService {
@@ -27,7 +28,6 @@ export class RegistrationService {
 
 	async registration(dto: UserInput): Promise<Result<true>> {
 		const { login, email } = dto;
-		console.log(dto);
 
 		const isUserExistByLogin = await this.usersRepository.isExistByLogin(login);
 
@@ -49,22 +49,11 @@ export class RegistrationService {
 				extensions: [{ field: "email", message: "Already Registered" }],
 			};
 		}
-		console.log("user not exist");
 
-		const result = await this.usersService.create(dto);
-		console.log("user created", result.data?.insertedId);
-
-		if (!result.data) {
-			return {
-				status: ResultStatus.InternalServerError,
-				errorMessage: "InternalServerError",
-				data: null,
-				extensions: [],
-			};
-		}
+		const { insertedId } = await this.usersService.create(dto);
 
 		const createdEntity = await this.usersRepository.findOneById(
-			result.data.insertedId,
+			insertedId,
 		);
 
 		if (!createdEntity) {
@@ -76,28 +65,19 @@ export class RegistrationService {
 			};
 		}
 
-		console.log("userInfo", createdEntity);
-
-		if (!createdEntity.isEmailConfirmed) {
-			console.log("почта отправлена", createdEntity.isEmailConfirmed);
-			this.emailAdapter
-				.sendEmail(
-					email,
-					`<h1>Thanks for your registration</h1>
-         <p>To finish registration please follow the link below:
-            <a href='https://somesite.com/confirm-email?code=${createdEntity.confirmationCode}'>complete registration</a>
-         </p>
-         `,
-				)
-				.catch((e) => {
-					console.error(e);
-				});
-		}
-		console.log("confirmationCode", createdEntity.confirmationCode);
-		console.log(
-			"confirmationCodeExpirationDate",
-			createdEntity.confirmationCodeExpirationDate,
-		);
+		//Send email with confirmation code
+		this.emailAdapter
+			.sendEmail(
+				email,
+				`<h1>Thanks for your registration</h1>
+				 <p>To finish registration please follow the link below:
+					<a href='${config.sendCodeEmailHost}confirm-email?code=${createdEntity.confirmationCode}'>complete registration</a>
+				 </p>
+				 `,
+			)
+			.catch((e) => {
+				console.error(e);
+			});
 
 		return {
 			status: ResultStatus.Success,
@@ -132,7 +112,7 @@ export class RegistrationService {
 				status: ResultStatus.BadRequest,
 				errorMessage: "Time is expired",
 				data: null,
-				extensions: [],
+				extensions: [{ field: "code", message: "Code is expired" }],
 			};
 		}
 
@@ -141,16 +121,7 @@ export class RegistrationService {
 		user.confirmationCodeExpirationDate = null;
 		user.isEmailConfirmed = true;
 
-		const updatedResult = await this.usersRepository.save(user);
-
-		if (!updatedResult) {
-			return {
-				status: ResultStatus.InternalServerError,
-				errorMessage: "Bad Request",
-				data: null,
-				extensions: [{ field: "code", message: "Code not updated" }],
-			};
-		}
+		await this.usersRepository.save(user);
 
 		return {
 			status: ResultStatus.Success,
@@ -161,9 +132,8 @@ export class RegistrationService {
 
 	async emailResending(dto: RegistrationEmail): Promise<Result<true>> {
 		const { email } = dto;
-		console.log(dto);
 
-		const user = await this.usersRepository.isExistByEmail(email);
+		const user = await this.usersRepository.findByEmail(email);
 
 		if (!user) {
 			return {
@@ -183,36 +153,26 @@ export class RegistrationService {
 			};
 		}
 
-		const newConfirmationCode = randomUUID().toString();
+		const newConfirmationCode = randomUUID();
 		const confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
 
-		console.log("почта отправлена", user.isEmailConfirmed);
+		user.confirmationCode = newConfirmationCode;
+		user.confirmationCodeExpirationDate = confirmationCodeExpirationDate;
+
+		await this.usersRepository.save(user);
+
 		this.emailAdapter
 			.sendEmail(
 				email,
 				`<h1>Thank for your registration</h1>
          <p>To finish registration please follow the link below:
-            <a href='https://somesite.com/confirm-email?code=${newConfirmationCode}'>complete registration</a>
+            <a href='${config.sendCodeEmailHost}confirm-email?code=${newConfirmationCode}'>complete registration</a>
          </p>
          `,
 			)
 			.catch((e) => {
 				console.error(e);
 			});
-
-		user.confirmationCode = newConfirmationCode;
-		user.confirmationCodeExpirationDate = confirmationCodeExpirationDate;
-
-		const updatedResult = await this.usersRepository.save(user);
-
-		if (!updatedResult) {
-			return {
-				status: ResultStatus.InternalServerError,
-				errorMessage: "InternalServerError",
-				data: null,
-				extensions: [],
-			};
-		}
 
 		return {
 			status: ResultStatus.Success,
@@ -221,11 +181,10 @@ export class RegistrationService {
 		};
 	}
 
-	async passwordRecovery(dto: RegistrationEmail): Promise<undefined> {
+	async passwordRecovery(dto: RegistrationEmail): Promise<void> {
 		const { email } = dto;
-		console.log(dto);
 
-		const user = await this.usersRepository.isExistByEmail(email);
+		const user = await this.usersRepository.findByEmail(email);
 
 		if (!user) {
 			return;
@@ -238,13 +197,17 @@ export class RegistrationService {
 		const recoveryCode = randomUUID();
 		const recoveryExpiration = dayjs().add(1, "hour").toISOString();
 
-		// console.log("почта отправлена", user.isEmailConfirmed);
+		user.recoveryCode = recoveryCode;
+		user.recoveryCodeExpirationDate = recoveryExpiration;
+
+		await this.usersRepository.save(user);
+
 		this.emailAdapter
 			.sendEmail(
 				email,
 				`<h1>Password recovery</h1>
          <p>To finish password recovery please follow the link below:
-          <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>
+          <a href='${config.sendCodeEmailHost}password-recovery?recoveryCode=${recoveryCode}'>
             recovery password
           </a>
         </p>
@@ -253,13 +216,6 @@ export class RegistrationService {
 			.catch((e) => {
 				console.error(e);
 			});
-
-		user.recoveryCode = recoveryCode;
-		user.recoveryCodeExpirationDate = recoveryExpiration;
-
-		await this.usersRepository.save(user);
-
-		return;
 	}
 
 	async updatePasswordWithRecoveryCode(
@@ -294,16 +250,7 @@ export class RegistrationService {
 		user.recoveryCode = null;
 		user.recoveryCodeExpirationDate = null;
 
-		const isPasswordUpdate = await this.usersRepository.save(user);
-
-		if (!isPasswordUpdate) {
-			return {
-				status: ResultStatus.BadRequest,
-				errorMessage: "Bad request",
-				data: null,
-				extensions: [],
-			};
-		}
+		await this.usersRepository.save(user);
 
 		return {
 			status: ResultStatus.Success,
