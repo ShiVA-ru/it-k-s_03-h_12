@@ -12,6 +12,7 @@ import type {RegistrationEmail} from "../types/email.input.type.js";
 import type {PasswordRecoveryInput} from "../types/new-pass.input.type.js";
 import {BcryptService} from "./bcrypt.service.js";
 import config from "../../../core/settings/config.js";
+import {isSuccessResult} from "../../../core/utils/type-guards.js";
 
 @injectable()
 export class RegistrationService {
@@ -29,8 +30,8 @@ export class RegistrationService {
 	async registration(dto: UserInput): Promise<Result<true>> {
 		const { login, email } = dto;
 
+		//TODO перенести в UserService
 		const isUserExistByLogin = await this.usersRepository.isExistByLogin(login);
-
 		if (isUserExistByLogin) {
 			return {
 				status: ResultStatus.BadRequest,
@@ -39,6 +40,7 @@ export class RegistrationService {
 				extensions: [{ field: "login", message: "Already Registered" }],
 			};
 		}
+		//TODO перенести в UserService
 		const isUserExistByEmail = await this.usersRepository.isExistByEmail(email);
 
 		if (isUserExistByEmail) {
@@ -50,10 +52,19 @@ export class RegistrationService {
 			};
 		}
 
-		const { insertedId } = await this.usersService.create(dto);
+		const result = await this.usersService.create(dto);
+
+		if (!isSuccessResult(result)) {
+			return {
+				status: result.status,
+				errorMessage: result.errorMessage,
+				data: result.data,
+				extensions: result.extensions,
+			};
+		}
 
 		const createdEntity = await this.usersRepository.findOneById(
-			insertedId,
+			result.data.insertedId,
 		);
 
 		if (!createdEntity) {

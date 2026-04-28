@@ -20,7 +20,7 @@ export class UsersService {
 	async create(
 		dto: UserInput,
 		isAdmin: boolean = false,
-	): Promise<{ insertedId: string }> {
+	): Promise<Result<{ insertedId: string }>> {
 		const { login, password, email } = dto;
 
 		const passwordHash = await this.bcryptService.generateHash(password);
@@ -29,6 +29,7 @@ export class UsersService {
 		user.login = login;
 		user.email = email;
 		user.password = passwordHash;
+		// if user created by admin set to true using isAdmin parameter
 		user.isEmailConfirmed = isAdmin;
 
 		if (!isAdmin) {
@@ -40,7 +41,11 @@ export class UsersService {
 
 		const insertedId = await this.usersRepository.save(user);
 
-		return { insertedId };
+		return {
+			status: ResultStatus.Success,
+			data: { insertedId },
+			extensions: [],
+		};
 	}
 
 	async deleteOneById(id: string): Promise<boolean> {

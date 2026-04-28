@@ -1,7 +1,9 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
+import {ObjectId} from "mongodb";
 
 export type Device = {
+	_id: ObjectId;
 	ip: string;
 	title: string;
 	iat: number;

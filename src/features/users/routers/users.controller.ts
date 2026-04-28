@@ -17,6 +17,9 @@ import { UsersQueryRepository } from "../repositories/users.query.repository.js"
 import type { UserInput } from "../types/users.input.type.js";
 import type { UsersQueryInput } from "../types/users.query.type.js";
 import type { UserView } from "../types/users.view.type.js";
+import {isSuccessResult} from "../../../core/utils/type-guards.js";
+import {resultCodeToHttpException} from "../../../core/utils/result-code-to-http-exception.js";
+// import {createErrorMessages} from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 
 @injectable()
 export class UsersController {
@@ -68,10 +71,15 @@ export class UsersController {
 		res: Response<UserView | validationErrorType[]>,
 	) {
 		try {
-			const { insertedId } = await this.usersService.create(req.body, true);
+			const result = await this.usersService.create(req.body, true);
+
+			if (!isSuccessResult(result)) {
+				return res
+					.status(resultCodeToHttpException(result.status))
+			}
 
 			const createdEntity = await this.usersQueryRepository.findOneById(
-				insertedId,
+				result.data.insertedId,
 			);
 
 			if (!createdEntity) {

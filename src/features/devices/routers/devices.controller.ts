@@ -52,9 +52,9 @@ export class DevicesController {
 
 			const isDeleted = await this.devicesService.deleteOther(userId, deviceId);
 
-			if (!isDeleted) {
-				return res.sendStatus(HttpStatus.NotFound);
-			}
+			// if (!isDeleted) {
+			// 	return res.sendStatus(HttpStatus.NotFound);
+			// }
 
 			return res.sendStatus(HttpStatus.NoContent);
 		} catch (error) {
