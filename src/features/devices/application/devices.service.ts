@@ -5,7 +5,7 @@ import type { DeviceMeta } from "../../../core/types/device-meta.types.js";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
 import { DeviceModel } from "../domain/device.entity.js";
-import { DevicesRepository } from "../repositories/devices.repository.js";
+import { DevicesRepository } from "../infra/devices.repository.js";
 import type { DeviceDb } from "../types/devices.db.type.js";
 
 @injectable()

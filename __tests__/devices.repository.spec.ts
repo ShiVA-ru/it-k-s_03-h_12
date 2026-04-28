@@ -11,7 +11,7 @@ import { container } from "../src/composition-root.js";
 import config from "../src/core/settings/config.js";
 import { closeDB, runDB } from "../src/db/mongo.js";
 import { DeviceModel } from "../src/features/devices/domain/device.entity.js";
-import { DevicesRepository } from "../src/features/devices/repositories/devices.repository.js";
+import { DevicesRepository } from "../src/features/devices/infra/devices.repository.js";
 
 describe("devices.repository", () => {
 	const devicesRepositoryInstance = container.get(DevicesRepository);

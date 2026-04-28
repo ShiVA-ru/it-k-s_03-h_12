@@ -2,12 +2,12 @@ import cookieParser from "cookie-parser";
 import express, { type Express } from "express";
 import { RouterPath } from "./core/constants/router.constants.js";
 import { HttpStatus } from "./core/types/http-statuses.types.js";
-import { authRouter } from "./features/auth/routers/auth.router.js";
-import { blogsRouter } from "./features/blogs/routers/blogs.router.js";
-import { commentsRouter } from "./features/comments/routers/comments.router.js";
-import { devicesRouter } from "./features/devices/routers/devices.router.js";
-import { postsRouter } from "./features/posts/routers/posts.router.js";
-import { usersRouter } from "./features/users/routers/users.router.js";
+import { authRouter } from "./features/auth/api/auth.router.js";
+import { blogsRouter } from "./features/blogs/api/blogs.router.js";
+import { commentsRouter } from "./features/comments/api/comments.router.js";
+import { devicesRouter } from "./features/devices/api/devices.router.js";
+import { postsRouter } from "./features/posts/api/posts.router.js";
+import { usersRouter } from "./features/users/api/users.router.js";
 import { testingRouter } from "./testing/testing.router.js";
 
 export const setupApp = (app: Express) => {

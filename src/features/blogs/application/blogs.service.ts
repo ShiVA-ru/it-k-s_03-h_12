@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { BlogModel } from "../domain/blog.entity.js";
-import { BlogsRepository } from "../repositories/blogs.repository.js";
+import { BlogsRepository } from "../infra/blogs.repository.js";
 import type { BlogInput } from "../types/blogs.input.type.js";
 
 @injectable()

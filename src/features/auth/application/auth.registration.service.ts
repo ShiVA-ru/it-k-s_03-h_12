@@ -5,7 +5,7 @@ import {EmailAdapter} from "../../../adapters/email.adapter.js";
 import {ResultStatus} from "../../../core/types/result.code.js";
 import type {Result} from "../../../core/types/result.type.js";
 import {UsersService} from "../../users/application/users.service.js";
-import {UsersRepository} from "../../users/repositories/users.repository.js";
+import {UsersRepository} from "../../users/infra/users.repository.js";
 import type {UserInput} from "../../users/types/users.input.type.js";
 import type {RegistrationConfirmationCode} from "../types/confirmation.input.type.js";
 import type {RegistrationEmail} from "../types/email.input.type.js";

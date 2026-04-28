@@ -2,10 +2,10 @@ import {inject, injectable} from "inversify";
 import type {IdType} from "../../../core/types/id.types.js";
 import {ResultStatus} from "../../../core/types/result.code.js";
 import type {Result} from "../../../core/types/result.type.js";
-import {PostsRepository} from "../../posts/repositories/posts.repository.js";
-import {UsersRepository} from "../../users/repositories/users.repository.js";
+import {PostsRepository} from "../../posts/infra/posts.repository.js";
+import {UsersRepository} from "../../users/infra/users.repository.js";
 import {CommentModel, LikeStatus} from "../domain/comment.entity.js";
-import {CommentsRepository} from "../repositories/comments.repository.js";
+import {CommentsRepository} from "../infra/comments.repository.js";
 import type {CommentInput} from "../types/comments.input.type.js";
 
 @injectable()

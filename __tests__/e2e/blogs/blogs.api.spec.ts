@@ -10,7 +10,7 @@ import type { BlogView } from "../../../src/features/blogs/types/blogs.view.type
 import { blogsTestManager } from "../utils/blogs.test-manager.js";
 import { commonTestManager } from "../utils/common.test-manager.js";
 
-describe("api tests for /blogs", () => {
+describe("infra tests for /blogs", () => {
 	let app: Express;
 	let createdEntity1: BlogView;
 	let createdEntity2: BlogView;

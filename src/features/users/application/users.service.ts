@@ -5,7 +5,7 @@ import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
 import { BcryptService } from "../../auth/application/bcrypt.service.js";
 import { type UserDocument, UserModel } from "../domain/user.entity.js";
-import { UsersRepository } from "../repositories/users.repository.js";
+import { UsersRepository } from "../infra/users.repository.js";
 import type { UserInput } from "../types/users.input.type.js";
 
 @injectable()
