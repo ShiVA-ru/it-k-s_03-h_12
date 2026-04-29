@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-import dayjs from "dayjs";
 import { inject, injectable } from "inversify";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
@@ -21,23 +19,10 @@ export class UsersService {
 		dto: UserInput,
 		isAdmin: boolean = false,
 	): Promise<Result<{ insertedId: string }>> {
-		const { login, password, email } = dto;
+		const { password } = dto;
 
 		const passwordHash = await this.bcryptService.generateHash(password);
-		const user = new UserModel();
-
-		user.login = login;
-		user.email = email;
-		user.password = passwordHash;
-		// if user created by admin set to true using isAdmin parameter
-		user.isEmailConfirmed = isAdmin;
-
-		if (!isAdmin) {
-			user.confirmationCode = randomUUID();
-			user.confirmationCodeExpirationDate = dayjs()
-				.add(1, "hour")
-				.toISOString();
-		}
+		const user = UserModel.create({...dto, password: passwordHash}, isAdmin);
 
 		const insertedId = await this.usersRepository.save(user);
 
