@@ -1,6 +1,7 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
 import type { CommentatorInfoType } from "../types/comments.commentator-info.type.js";
+import {CreateCommentDto} from "./dto.js";
 
 export enum LikeStatus {
 	None = 'None',
@@ -21,9 +22,13 @@ export type Comment = {
 	likes: Like[];
 };
 
-type CommentModel = Model<Comment>;
+interface CommentMethods {}
 
-export type CommentDocument = HydratedDocument<Comment>;
+type CommentStatic = typeof CommentEntity;
+
+type CommentModel = Model<Comment, {}, CommentMethods> & CommentStatic;
+
+export type CommentDocument = HydratedDocument<Comment, CommentMethods>;
 
 const LikeSchema = new mongoose.Schema<Like>({
 	userId: { type: String, required: true },
@@ -35,7 +40,7 @@ const CommentatorInfoSchema = new mongoose.Schema<CommentatorInfoType>({
 	userLogin: { type: String, required: true },
 });
 
-const CommentSchema = new mongoose.Schema<Comment>({
+const CommentSchema = new mongoose.Schema<Comment, CommentModel, CommentMethods>({
 	content: { type: String, trim: true, required: true },
 	postId: { type: String, required: true },
 	commentatorInfo: CommentatorInfoSchema,
@@ -43,6 +48,28 @@ const CommentSchema = new mongoose.Schema<Comment>({
 }, {
 	timestamps: true
 });
+
+class CommentEntity {
+	private constructor(
+		public content: string,
+		public postId: string,
+		public commentatorInfo: CommentatorInfoType,
+		public createdAt: Date,
+		public likes: Like[],
+	) {}
+
+	static createComment (dto: CreateCommentDto) {
+		const comment = new CommentModel(dto);
+		// const comment = new CommentModel();
+		//
+		// comment.content = dto.content;
+		// comment.postId = dto.postId;
+		// comment.commentatorInfo = dto.commentatorInfo;
+		return comment;
+	}
+}
+
+CommentSchema.loadClass(CommentEntity);
 
 export const CommentModel = model<Comment, CommentModel>(
 	"Comment",

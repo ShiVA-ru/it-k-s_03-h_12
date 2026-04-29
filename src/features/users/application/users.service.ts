@@ -22,7 +22,7 @@ export class UsersService {
 		const { password } = dto;
 
 		const passwordHash = await this.bcryptService.generateHash(password);
-		const user = UserModel.create({...dto, password: passwordHash}, isAdmin);
+		const user = UserModel.createUser({...dto, password: passwordHash}, isAdmin);
 
 		const insertedId = await this.usersRepository.save(user);
 

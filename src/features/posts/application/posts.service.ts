@@ -20,11 +20,11 @@ export class PostsService {
 			return null;
 		}
 
-		const post = PostModel.create(dto, blogEntity.name);
+		const post = PostModel.createPost(dto, blogEntity.name);
 
-		const insertedId = await this.postsRepository.save(post);
+		const postId = await this.postsRepository.save(post);
 
-		return insertedId;
+		return postId;
 	}
 
 	async updateById(

@@ -46,11 +46,20 @@ export class CommentsService {
 			};
 		}
 
-		const comment = new CommentModel();
+		const { content } = dto;
 
-		comment.content = dto.content;
-		comment.postId = postId;
-		comment.commentatorInfo = { userId, userLogin: user.login };
+		const comment = CommentModel.createComment({
+			content,
+			postId,
+			commentatorInfo: {
+				userId,
+				userLogin: user.login,
+			}
+		});
+
+		// comment.content = dto.content;
+		// comment.postId = postId;
+		// comment.commentatorInfo = { userId, userLogin: user.login };
 
 		const commentId = await this.commentsRepository.save(comment);
 

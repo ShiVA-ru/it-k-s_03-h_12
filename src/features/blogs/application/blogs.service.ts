@@ -11,7 +11,7 @@ export class BlogsService {
 	) {}
 
 	async create(dto: BlogInput): Promise<string> {
-		const blog = BlogModel.create(dto);
+		const blog = BlogModel.createBlog(dto);
 
 		return await this.blogsRepository.save(blog);
 	}

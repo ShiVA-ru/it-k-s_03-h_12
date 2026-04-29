@@ -1,6 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import {CreateBlogDto} from "./CreateBlog.dto.js";
+import {Dto} from "./dto.js";
 
 export type Blog = {
 	name: string;
@@ -35,7 +35,7 @@ class BlogEntity {
 		public isMembership: boolean = false,
 	) {}
 
-	static create (dto: CreateBlogDto) {
+	static createBlog (dto: Dto) {
 		const blog = new BlogModel(dto);
 
 		// const blog = new BlogModel();
