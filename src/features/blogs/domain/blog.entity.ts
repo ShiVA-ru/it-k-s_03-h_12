@@ -1,5 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
+import {CreateBlogDto} from "./CreateBlog.dto.js";
 
 export type Blog = {
 	name: string;
@@ -9,11 +10,15 @@ export type Blog = {
 	isMembership: boolean;
 };
 
-type BlogModel = Model<Blog>;
+interface BlogMethods {}
 
-export type BlogDocument = HydratedDocument<Blog>;
+type BlogStatic = typeof BlogEntity;
 
-const BlogSchema = new mongoose.Schema<Blog>({
+type BlogModel = Model<Blog, {}, BlogMethods> & BlogStatic;
+
+export type BlogDocument = HydratedDocument<Blog, BlogMethods>;
+
+const BlogSchema = new mongoose.Schema<Blog, BlogModel, BlogMethods>({
 	name: { type: String, trim: true, required: true },
 	description: { type: String, trim: true, required: true },
 	websiteUrl: { type: String, trim: true, required: true },
@@ -21,5 +26,28 @@ const BlogSchema = new mongoose.Schema<Blog>({
 }, {
 	timestamps: true
 });
+
+class BlogEntity {
+	private constructor(
+		public name: string,
+		public description: string,
+		public websiteUrl: string,
+		public isMembership: boolean = false,
+	) {}
+
+	static create (dto: CreateBlogDto) {
+		const blog = new BlogModel(dto);
+
+		// const blog = new BlogModel();
+		//
+		// blog.name = dto.name;
+		// blog.description = dto.description;
+		// blog.websiteUrl = dto.websiteUrl;
+
+		return blog;
+	}
+}
+
+BlogSchema.loadClass(BlogEntity);
 
 export const BlogModel = model<Blog, BlogModel>("Blog", BlogSchema);
