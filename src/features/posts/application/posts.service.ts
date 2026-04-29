@@ -20,14 +20,11 @@ export class PostsService {
 			return null;
 		}
 
-		const post = new PostModel();
-		post.title = dto.title;
-		post.shortDescription = dto.shortDescription;
-		post.content = dto.content;
-		post.blogId = dto.blogId;
-		post.blogName = blogEntity.name;
+		const post = PostModel.create(dto, blogEntity.name);
 
-		return await this.postsRepository.save(post);
+		const insertedId = await this.postsRepository.save(post);
+
+		return insertedId;
 	}
 
 	async updateById(

@@ -1,5 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
+import {CreatePostDto} from "./PostCreate.dto.js";
 
 export type Post = {
 	title: string;
@@ -10,11 +11,15 @@ export type Post = {
 	createdAt: Date;
 };
 
-type PostModel = Model<Post>;
+interface PostMethods {}
 
-export type PostDocument = HydratedDocument<Post>;
+type PostStatic = typeof PostEntity;
 
-const PostSchema = new mongoose.Schema<Post>({
+type PostModel = Model<Post, {}, PostMethods> & PostStatic;
+
+export type PostDocument = HydratedDocument<Post, PostMethods>;
+
+const PostSchema = new mongoose.Schema<Post, PostModel, PostMethods>({
 	title: { type: String, trim: true, required: true },
 	shortDescription: { type: String, trim: true, required: true },
 	content: { type: String, trim: true, required: true },
@@ -23,5 +28,30 @@ const PostSchema = new mongoose.Schema<Post>({
 }, {
 	timestamps: true
 });
+
+class PostEntity {
+	private constructor(
+		public title: string,
+		public shortDescription: string,
+		public content: string,
+		public blogId: string,
+		public blogName: string,
+	) {}
+
+	static create (dto: CreatePostDto, blogName: string) {
+		// const post = new PostModel(dto);
+		// post.blogName = blogName;
+		const post = new PostModel();
+		post.title = dto.title;
+		post.shortDescription = dto.shortDescription;
+		post.content = dto.content;
+		post.blogId = dto.blogId;
+		post.blogName = blogName;
+
+		return post;
+	}
+}
+
+PostSchema.loadClass(PostEntity);
 
 export const PostModel = model<Post, PostModel>("Post", PostSchema);

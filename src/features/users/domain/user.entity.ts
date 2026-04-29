@@ -52,9 +52,7 @@ class UserEntity {
 	}
 
 	static create (dto: CreateUserDto, isAdmin: boolean) {
-		console.log(dto);
 		const user = new UserModel(dto);
-		console.log(user)
 		// if user created by admin set to true using isAdmin parameter
 		user.isEmailConfirmed = isAdmin;
 
@@ -78,8 +76,6 @@ class UserEntity {
 		//
 		// return user;
 		//
-
-		console.log('user after create', user);
 		return user;
 	}
 }
