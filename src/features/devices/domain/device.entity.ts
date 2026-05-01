@@ -1,6 +1,9 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
 import {ObjectId} from "mongodb";
+import {CreateDeviceDto} from "./dto.js";
+import dayjs from "dayjs";
+import {ResultStatus} from "../../../core/types/result.code.js";
 
 export type Device = {
 	_id: ObjectId;
@@ -12,11 +15,15 @@ export type Device = {
 	deviceId: string;
 };
 
-type DeviceModel = Model<Device>;
+interface DeviceMethods {}
 
-export type DeviceDocument = HydratedDocument<Device>;
+type DeviceStatic = typeof DeviceEntity;
 
-const DeviceSchema = new mongoose.Schema<Device>({
+type DeviceModel = Model<Device, {}, DeviceMethods> & DeviceStatic;
+
+export type DeviceDocument = HydratedDocument<Device, DeviceMethods>;
+
+const DeviceSchema = new mongoose.Schema<Device, DeviceModel, DeviceMethods>({
 	ip: { type: String, required: true },
 	title: { type: String, required: true },
 	iat: { type: Number, required: true },
@@ -24,5 +31,30 @@ const DeviceSchema = new mongoose.Schema<Device>({
 	userId: { type: String, required: true },
 	deviceId: { type: String, required: true },
 });
+
+class DeviceEntity{
+	private constructor(
+		public deviceId: string,
+		public ip: string,
+		public title: string,
+		public iat: number,
+		public userId: string,
+	) {}
+
+	static createDevice (dto: CreateDeviceDto) {
+		const device = new DeviceModel();
+
+		device.ip = dto.ip;
+		device.title = dto.title;
+		device.iat = dto.iat;
+		device.expiresDate = dayjs().add(1, "hour").toISOString();
+		device.userId = dto.userId;
+		device.deviceId = dto.deviceId;
+
+		return device;
+	}
+}
+
+DeviceSchema.loadClass(DeviceEntity);
 
 export const DeviceModel = model<Device, DeviceModel>("Device", DeviceSchema);

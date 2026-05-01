@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import dayjs from "dayjs";
 import { inject, injectable } from "inversify";
 import type { DeviceMeta } from "../../../core/types/device-meta.types.js";
 import { ResultStatus } from "../../../core/types/result.code.js";
@@ -22,14 +21,15 @@ export class DevicesService {
 		const { ip, userAgent, userId } = dto;
 		const deviceId = randomUUID();
 
-		const device = new DeviceModel();
+		const device = DeviceModel.createDevice({
+			ip,
+			userId,
+			deviceId,
+			title: userAgent,
+			iat
+		});
 
-		device.ip = ip;
-		device.title = userAgent;
-		device.iat = iat;
-		device.expiresDate = dayjs().add(1, "hour").toISOString();
-		device.userId = userId;
-		device.deviceId = deviceId;
+
 
 		const insertedId = await this.devicesRepository.save(device);
 

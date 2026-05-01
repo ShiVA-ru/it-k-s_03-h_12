@@ -59,12 +59,12 @@ class CommentEntity {
 	) {}
 
 	static createComment (dto: CreateCommentDto) {
-		const comment = new CommentModel(dto);
-		// const comment = new CommentModel();
-		//
-		// comment.content = dto.content;
-		// comment.postId = dto.postId;
-		// comment.commentatorInfo = dto.commentatorInfo;
+		const comment = new CommentModel();
+
+		comment.content = dto.content;
+		comment.postId = dto.postId;
+		comment.commentatorInfo = dto.commentatorInfo;
+
 		return comment;
 	}
 }

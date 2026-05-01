@@ -51,31 +51,27 @@ class UserEntity {
 		console.log(`=========I'm not working here=============`);
 	}
 
-	static createUser (dto: CreateUserDto, isAdmin: boolean) {
-		const user = new UserModel(dto);
-		// if user created by admin set to true using isAdmin parameter
-		user.isEmailConfirmed = isAdmin;
+	static createUser (dto: CreateUserDto) {
+		const user = new UserModel();
 
-		if (!isAdmin) {
-			user.confirmationCode = randomUUID();
-			user.confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
-		}
+		user.login = dto.login;
+		user.email = dto.email;
+		user.password = dto.password;
+		user.isEmailConfirmed = false;
+		user.confirmationCode = randomUUID();
+		user.confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
 
-		// const user = new UserModel();
-		// user.login = dto.login;
-		// user.email = dto.email;
-		// user.password = dto.password;
-		// user.isEmailConfirmed = isAdmin;
-		//
-		// if (!isAdmin) {
-		// 	user.confirmationCode = randomUUID();
-		// 	user.confirmationCodeExpirationDate = dayjs()
-		// 		.add(1, "hour")
-		// 		.toISOString();
-		// }
-		//
-		// return user;
-		//
+		return user;
+	}
+
+	static createUserBySA (dto: CreateUserDto) {
+		const user = new UserModel();
+
+		user.login = dto.login;
+		user.email = dto.email;
+		user.password = dto.password;
+		user.isEmailConfirmed = true;
+
 		return user;
 	}
 }

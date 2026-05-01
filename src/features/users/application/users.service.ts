@@ -22,7 +22,14 @@ export class UsersService {
 		const { password } = dto;
 
 		const passwordHash = await this.bcryptService.generateHash(password);
-		const user = UserModel.createUser({...dto, password: passwordHash}, isAdmin);
+
+		let user: UserDocument;
+
+		if (isAdmin) {
+			user = UserModel.createUserBySA({...dto, password: passwordHash});
+		} else {
+			user = UserModel.createUser({...dto, password: passwordHash});
+		}
 
 		const insertedId = await this.usersRepository.save(user);
 

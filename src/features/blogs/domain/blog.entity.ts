@@ -36,13 +36,11 @@ class BlogEntity {
 	) {}
 
 	static createBlog (dto: Dto) {
-		const blog = new BlogModel(dto);
+		const blog = new BlogModel();
 
-		// const blog = new BlogModel();
-		//
-		// blog.name = dto.name;
-		// blog.description = dto.description;
-		// blog.websiteUrl = dto.websiteUrl;
+		blog.name = dto.name;
+		blog.description = dto.description;
+		blog.websiteUrl = dto.websiteUrl;
 
 		return blog;
 	}

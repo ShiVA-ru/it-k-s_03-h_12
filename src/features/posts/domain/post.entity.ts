@@ -39,9 +39,8 @@ class PostEntity {
 	) {}
 
 	static createPost (dto: CreatePostDto, blogName: string) {
-		// const post = new PostModel(dto);
-		// post.blogName = blogName;
 		const post = new PostModel();
+
 		post.title = dto.title;
 		post.shortDescription = dto.shortDescription;
 		post.content = dto.content;
