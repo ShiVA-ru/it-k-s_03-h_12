@@ -3,7 +3,6 @@ import mongoose, { model } from "mongoose";
 import {ObjectId} from "mongodb";
 import {CreateDeviceDto} from "./dto.js";
 import dayjs from "dayjs";
-import {ResultStatus} from "../../../core/types/result.code.js";
 
 export type Device = {
 	_id: ObjectId;

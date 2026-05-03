@@ -57,10 +57,6 @@ export class CommentsService {
 			}
 		});
 
-		// comment.content = dto.content;
-		// comment.postId = postId;
-		// comment.commentatorInfo = { userId, userLogin: user.login };
-
 		const commentId = await this.commentsRepository.save(comment);
 
 		return {
