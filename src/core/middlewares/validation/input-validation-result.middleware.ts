@@ -25,7 +25,6 @@ export const inputValidationResultMiddleware = (
 	const errors = validationResult(req)
 		.formatWith(formatErrors)
 		.array({ onlyFirstError: true });
-	console.log('inputValidationMiddleware errors', errors);
 	if (errors.length) {
 		return res.status(HttpStatus.BadRequest).json({ errorsMessages: errors });
 	}

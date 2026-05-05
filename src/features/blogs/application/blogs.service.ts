@@ -12,21 +12,11 @@ export class BlogsService {
 
 	async create(dto: CreateBlogDto): Promise<string> {
 		const blog = BlogModel.createBlog(dto);
-		console.log('======================')
-		console.log('======================')
-		console.log('createBlog')
-		console.log('======================')
-		console.log('======================')
 		return await this.blogsRepository.save(blog);
 	}
 
 	async updateById(dto: UpdateBlogDto): Promise<boolean> {
 		const blog = await this.blogsRepository.findOneById(dto.id);
-		console.log('======================')
-		console.log('======================')
-		console.log('updateBlogByid=')
-		console.log('======================')
-		console.log('======================')
 
 		if (!blog) {
 			return false;

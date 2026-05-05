@@ -55,7 +55,6 @@ export class JwtService {
 				config.jwtPrivateKey,
 			) as AccessTokenPayload;
 
-			console.log("verified", verified);
 			return {
 				status: ResultStatus.Success,
 				extensions: [],
@@ -81,7 +80,6 @@ export class JwtService {
 				config.jwtPrivateKey,
 			) as RefreshTokenPayload;
 
-			console.log("verified", verified);
 			return {
 				status: ResultStatus.Success,
 				extensions: [],

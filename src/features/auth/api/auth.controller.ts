@@ -37,7 +37,6 @@ export class AuthController {
 	async login(req: RequestWithBody<LoginInput>, res: Response) {
 		try {
 			const { loginOrEmail, password } = req.body;
-			console.log("req.deviceMeta", req.deviceMeta);
 
 			const result = await this.authService.loginUser(
 				loginOrEmail,
@@ -152,7 +151,6 @@ export class AuthController {
 	async registration(req: RequestWithBody<UserInput>, res: Response) {
 		try {
 			const result = await this.registrationService.registration(req.body);
-			console.log("result", result);
 
 			if (!isSuccessResult(result)) {
 				return res
@@ -192,19 +190,13 @@ export class AuthController {
 		res: Response,
 	) {
 		try {
-			console.log('POST -> "auth/registration-email-resending', req.body);
 			const result = await this.registrationService.emailResending(req.body);
 
 			if (!isSuccessResult(result)) {
-				console.log('POST -> "auth/registration-email-resending error', result);
 				return res
 					.status(resultCodeToHttpException(result.status))
 					.send(createErrorMessages(result.extensions));
 			}
-			console.log(
-				'POST -> "auth/registration-email-resending succefull',
-				result,
-			);
 
 			return res.sendStatus(HttpStatus.NoContent);
 		} catch (error) {
@@ -218,7 +210,6 @@ export class AuthController {
 		res: Response,
 	) {
 		try {
-			console.log('POST -> "auth/password-recovery', req.body);
 			await this.registrationService.passwordRecovery(req.body);
 
 			return res.sendStatus(HttpStatus.NoContent);
@@ -233,15 +224,10 @@ export class AuthController {
 		res: Response,
 	) {
 		try {
-			console.log('POST -> "auth/new-password', req.body);
 			const updatedEntity =
 				await this.registrationService.updatePasswordWithRecoveryCode(req.body);
 
 			if (!isSuccessResult(updatedEntity)) {
-				console.log(
-					'POST -> "auth/new-password',
-					updatedEntity,
-				);
 				return res
 					.status(resultCodeToHttpException(updatedEntity.status))
 					.send(createErrorMessages(updatedEntity.extensions));

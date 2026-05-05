@@ -43,7 +43,6 @@ export class DevicesController {
 
 	async deleteDevices(req: Request, res: Response) {
 		try {
-			console.log("delete all devices by userId");
 			const { userId, deviceId } = req.refreshTokenPayload;
 
 			if (!userId || !deviceId) {

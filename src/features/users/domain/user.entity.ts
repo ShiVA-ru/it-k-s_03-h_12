@@ -47,9 +47,7 @@ class UserEntity {
 		public confirmationCodeExpirationDate: string | null = null,
 		public recoveryCode: string | null = null,
 		public recoveryCodeExpirationDate: string | null = null,
-	) {
-		console.log(`=========I'm not working here=============`);
-	}
+	) {}
 
 	static createUser (dto: CreateUserDto) {
 		const user = new UserModel();

@@ -43,11 +43,11 @@ export class PostsService {
 			return { notFound: true, entity: "post" };
 		}
 
-		post.title = dto.title;
-		post.shortDescription = dto.title;
-		post.content = dto.content;
-		post.blogId = dto.blogId;
-		post.blogName = blogEntity.name;
+		post.updatePost({
+			id,
+			...dto,
+			blogName: blogEntity.name
+		});
 
 		const isUpdated = await this.postsRepository.save(post);
 
