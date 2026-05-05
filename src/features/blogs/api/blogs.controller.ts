@@ -20,9 +20,9 @@ import type { PostsQueryInput } from "../../posts/types/posts.query.type.js";
 import type { PostView } from "../../posts/types/posts.view.type.js";
 import { BlogsService } from "../application/blogs.service.js";
 import { BlogsQueryRepository } from "../infra/blogs.query.repository.js";
-import type { BlogInput } from "../types/blogs.input.type.js";
 import type { BlogsQueryInput } from "../types/blogs.query.type.js";
 import type { BlogView } from "../types/blogs.view.type.js";
+import {BlogInput} from "../types/blogs.input.type.js";
 
 @injectable()
 export class BlogsController {
@@ -158,10 +158,10 @@ export class BlogsController {
 		res: Response<BlogView | validationErrorsDto>,
 	) {
 		try {
-			const isUpdated = await this.blogsService.updateById(
-				req.params.id,
-				req.body,
-			);
+			const isUpdated = await this.blogsService.updateById({
+				id: req.params.id,
+				...req.body,
+			});
 
 			if (!isUpdated) {
 				res.sendStatus(HttpStatus.NotFound);

@@ -94,4 +94,22 @@ describe("update tests for /blogs", () => {
 			.get(`${RouterPath.blogs}/${createdEntity1.id}`)
 			.expect(HttpStatus.Ok, createdEntity1);
 	});
+
+	it("shouldn update entity with correct data", async () => {
+		const data: BlogInput = {
+			name: "Name1",
+			description: "descr",
+			websiteUrl: "https://www.rogaikopyta.com",
+		};
+
+		await request(app)
+			.put(`${RouterPath.blogs}/${createdEntity1.id}`)
+			.set("Authorization", adminToken)
+			.send(data)
+			.expect(HttpStatus.NoContent);
+
+		await request(app)
+			.get(`${RouterPath.blogs}/${createdEntity1.id}`)
+			.expect(HttpStatus.Ok, {...createdEntity1, ...data});
+	});
 });

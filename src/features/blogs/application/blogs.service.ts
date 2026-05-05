@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { BlogModel } from "../domain/blog.entity.js";
 import { BlogsRepository } from "../infra/blogs.repository.js";
-import type { BlogInput } from "../types/blogs.input.type.js";
+import type {CreateBlogDto, UpdateBlogDto} from "../types/dto.js";
 
 @injectable()
 export class BlogsService {
@@ -10,22 +10,29 @@ export class BlogsService {
 		protected blogsRepository: BlogsRepository,
 	) {}
 
-	async create(dto: BlogInput): Promise<string> {
+	async create(dto: CreateBlogDto): Promise<string> {
 		const blog = BlogModel.createBlog(dto);
-
+		console.log('======================')
+		console.log('======================')
+		console.log('createBlog')
+		console.log('======================')
+		console.log('======================')
 		return await this.blogsRepository.save(blog);
 	}
 
-	async updateById(id: string, dto: BlogInput): Promise<boolean> {
-		const blog = await this.blogsRepository.findOneById(id);
+	async updateById(dto: UpdateBlogDto): Promise<boolean> {
+		const blog = await this.blogsRepository.findOneById(dto.id);
+		console.log('======================')
+		console.log('======================')
+		console.log('updateBlogByid=')
+		console.log('======================')
+		console.log('======================')
 
 		if (!blog) {
 			return false;
 		}
 
-		blog.name = dto.name;
-		blog.description = dto.description;
-		blog.websiteUrl = dto.websiteUrl;
+		blog.updateBlog(dto);
 
 		const isUpdated = await this.blogsRepository.save(blog);
 
