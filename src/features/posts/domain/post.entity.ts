@@ -1,6 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import {CreatePostDto, UpdatePostDto} from "../types/dto.js";
+import { CreatePostDto, UpdatePostDto } from "../types/dto.js";
 
 export type Post = {
 	title: string;
@@ -40,7 +40,7 @@ class PostEntity {
 		public blogName: string,
 	) {}
 
-	static createPost (dto: CreatePostDto, blogName: string) {
+	static createPost(dto: CreatePostDto, blogName: string) {
 		const post = new PostModel();
 
 		post.title = dto.title;

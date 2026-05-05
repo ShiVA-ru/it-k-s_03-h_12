@@ -4,10 +4,7 @@ import { createErrorMessages } from "../../../core/middlewares/validation/input-
 import type { validationErrorsDto } from "../../../core/types/errors.types.js";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import type { IdType } from "../../../core/types/id.types.js";
-import type {
-	RequestWithBody,
-	RequestWithUserId,
-} from "../../../core/types/request.types.js";
+import type { RequestWithBody, RequestWithUserId, } from "../../../core/types/request.types.js";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
 import { DevicesService } from "../../devices/application/devices.service.js";

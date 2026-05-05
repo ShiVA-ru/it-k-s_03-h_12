@@ -29,7 +29,7 @@ describe("tests for /posts", () => {
 
 	beforeAll(async () => {
 		app = await commonTestManager.initApp();
-		await request(app).delete(`${RouterPath.testing}/all-data`);
+		await request(app).delete(`${ RouterPath.testing }/all-data`);
 
 		const blogData: BlogInput = {
 			name: "Test Blog",
@@ -52,7 +52,7 @@ describe("tests for /posts", () => {
 	});
 
 	it("should return 404 if not existing entity", async () => {
-		await request(app).get(`${RouterPath.posts}/${new ObjectId()}`).expect(404);
+		await request(app).get(`${ RouterPath.posts }/${ new ObjectId() }`).expect(404);
 	});
 
 	it("should create entity with correct data", async () => {
@@ -102,25 +102,25 @@ describe("tests for /posts", () => {
 	});
 	it("should delete entity", async () => {
 		await request(app)
-			.delete(`${RouterPath.posts}/${createdEntity1.id}`)
+			.delete(`${ RouterPath.posts }/${ createdEntity1.id }`)
 			.set("Authorization", adminToken)
 			.expect(HttpStatus.NoContent);
 
 		await request(app)
-			.get(`${RouterPath.posts}/${createdEntity1.id}`)
+			.get(`${ RouterPath.posts }/${ createdEntity1.id }`)
 			.expect(HttpStatus.NotFound);
 
 		await request(app)
-			.get(`${RouterPath.posts}/${createdEntity2.id}`)
+			.get(`${ RouterPath.posts }/${ createdEntity2.id }`)
 			.expect(HttpStatus.Ok, createdEntity2);
 
 		await request(app)
-			.delete(`${RouterPath.posts}/${createdEntity2.id}`)
+			.delete(`${ RouterPath.posts }/${ createdEntity2.id }`)
 			.set("Authorization", adminToken)
 			.expect(HttpStatus.NoContent);
 
 		await request(app)
-			.get(`${RouterPath.posts}/${createdEntity2.id}`)
+			.get(`${ RouterPath.posts }/${ createdEntity2.id }`)
 			.expect(HttpStatus.NotFound);
 
 		await request(app)
