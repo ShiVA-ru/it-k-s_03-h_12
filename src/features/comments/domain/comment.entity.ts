@@ -1,7 +1,7 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
 import type { CommentatorInfoType } from "../types/comments.commentator-info.type.js";
-import { CreateCommentDto, LikeStatusDto, UpdateCommentDto } from "../types/dto.js";
+import { CreateCommentDto, LikeStatusDto, UpdateCommentDto } from "../types/comment.dto.js";
 
 export enum LikeStatus {
 	None = 'None',

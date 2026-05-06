@@ -1,6 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import type { CreateBlogDto, UpdateBlogDto } from "../types/dto.js";
+import type { CreateBlogDto, UpdateBlogDto } from "../types/blog.dto.js";
 
 export type Blog = {
 	name: string;
@@ -11,7 +11,7 @@ export type Blog = {
 };
 
 interface BlogMethods {
-	updateBlog (dto: UpdateBlogDto): void
+	updateBlog(dto: UpdateBlogDto): void
 }
 
 type BlogStatic = typeof BlogEntity;
@@ -37,7 +37,7 @@ class BlogEntity {
 		public isMembership: boolean = false,
 	) {}
 
-	static createBlog (dto: CreateBlogDto) {
+	static createBlog(dto: CreateBlogDto) {
 		const blog = new BlogModel();
 
 		blog.name = dto.name;
@@ -47,7 +47,7 @@ class BlogEntity {
 		return blog;
 	}
 
-	updateBlog (dto: UpdateBlogDto) {
+	updateBlog(dto: UpdateBlogDto) {
 		this.name = dto.name;
 		this.description = dto.description;
 		this.websiteUrl = dto.websiteUrl;

@@ -1,7 +1,7 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import {CreateUserDto} from "./dto.js";
-import {randomUUID} from "node:crypto";
+import { CreateUserDto } from "../types/user.dto.js";
+import { randomUUID } from "node:crypto";
 import dayjs from "dayjs";
 
 export type User = {
@@ -16,7 +16,8 @@ export type User = {
 	recoveryCodeExpirationDate?: string | null;
 };
 
-interface UserMethods {}
+interface UserMethods {
+}
 
 type UserStatic = typeof UserEntity;
 
@@ -49,7 +50,7 @@ class UserEntity {
 		public recoveryCodeExpirationDate: string | null = null,
 	) {}
 
-	static createUser (dto: CreateUserDto) {
+	static createUser(dto: CreateUserDto) {
 		const user = new UserModel();
 
 		user.login = dto.login;
@@ -62,7 +63,7 @@ class UserEntity {
 		return user;
 	}
 
-	static createUserBySA (dto: CreateUserDto) {
+	static createUserBySA(dto: CreateUserDto) {
 		const user = new UserModel();
 
 		user.login = dto.login;

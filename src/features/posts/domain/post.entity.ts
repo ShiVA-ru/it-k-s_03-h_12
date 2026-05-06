@@ -1,6 +1,6 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import { CreatePostDto, UpdatePostDto } from "../types/dto.js";
+import { CreatePostDto, UpdatePostDto } from "../types/post.dto.js";
 
 export type Post = {
 	title: string;

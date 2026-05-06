@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { BlogModel } from "../domain/blog.entity.js";
 import { BlogsRepository } from "../infra/blogs.repository.js";
-import type {CreateBlogDto, UpdateBlogDto} from "../types/dto.js";
+import type { CreateBlogDto, UpdateBlogDto } from "../types/blog.dto.js";
 
 @injectable()
 export class BlogsService {
