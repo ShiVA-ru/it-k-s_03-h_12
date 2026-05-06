@@ -4,9 +4,10 @@ import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
 import { PostsRepository } from "../../posts/infra/posts.repository.js";
 import { UsersRepository } from "../../users/infra/users.repository.js";
-import { CommentModel, LikeStatus } from "../domain/comment.entity.js";
+import { CommentModel } from "../domain/comment.entity.js";
 import { CommentsRepository } from "../infra/comments.repository.js";
 import type { CommentInput } from "../types/comments.input.type.js";
+import { LikeStatus } from "../../../core/types/like-status.type.js";
 
 @injectable()
 export class CommentsService {

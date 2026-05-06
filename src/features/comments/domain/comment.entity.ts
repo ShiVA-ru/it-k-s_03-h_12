@@ -2,12 +2,7 @@ import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
 import type { CommentatorInfoType } from "../types/comments.commentator-info.type.js";
 import { CreateCommentDto, LikeStatusDto, UpdateCommentDto } from "../types/comment.dto.js";
-
-export enum LikeStatus {
-	None = 'None',
-	Like = 'Like',
-	Dislike = 'Dislike',
-}
+import { LikeStatus } from "../../../core/types/like-status.type.js";
 
 export type Like = {
 	userId: string;

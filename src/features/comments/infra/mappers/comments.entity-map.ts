@@ -1,6 +1,7 @@
-import type {WithId} from "mongodb";
-import {Comment, LikeStatus} from "../../domain/comment.entity.js";
-import type {CommentView} from "../../types/comments.view.type.js";
+import type { WithId } from "mongodb";
+import { Comment } from "../../domain/comment.entity.js";
+import type { CommentView } from "../../types/comments.view.type.js";
+import { LikeStatus } from "../../../../core/types/like-status.type.js";
 
 export const mapEntityToViewModel = (
 	dbEntity: WithId<Comment>,

@@ -1,5 +1,6 @@
 import type { CommentatorInfoType } from "./comments.commentator-info.type.js";
-import { LikeStatus } from "../domain/comment.entity.js";
+
+import { LikeStatus } from "../../../core/types/like-status.type.js";
 
 export type CreateCommentDto = {
 	content: string;
