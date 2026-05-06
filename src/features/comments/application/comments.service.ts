@@ -1,12 +1,12 @@
-import {inject, injectable} from "inversify";
-import type {IdType} from "../../../core/types/id.types.js";
-import {ResultStatus} from "../../../core/types/result.code.js";
-import type {Result} from "../../../core/types/result.type.js";
-import {PostsRepository} from "../../posts/infra/posts.repository.js";
-import {UsersRepository} from "../../users/infra/users.repository.js";
-import {CommentModel, LikeStatus} from "../domain/comment.entity.js";
-import {CommentsRepository} from "../infra/comments.repository.js";
-import type {CommentInput} from "../types/comments.input.type.js";
+import { inject, injectable } from "inversify";
+import type { IdType } from "../../../core/types/id.types.js";
+import { ResultStatus } from "../../../core/types/result.code.js";
+import type { Result } from "../../../core/types/result.type.js";
+import { PostsRepository } from "../../posts/infra/posts.repository.js";
+import { UsersRepository } from "../../users/infra/users.repository.js";
+import { CommentModel, LikeStatus } from "../domain/comment.entity.js";
+import { CommentsRepository } from "../infra/comments.repository.js";
+import type { CommentInput } from "../types/comments.input.type.js";
 
 @injectable()
 export class CommentsService {
@@ -82,7 +82,7 @@ export class CommentsService {
 			};
 		}
 
-		if (comment?.commentatorInfo.userId !== userId) {
+		if (comment.commentatorInfo.userId !== userId) {
 			return {
 				status: ResultStatus.Forbidden,
 				errorMessage: "user is incorrect",
@@ -91,7 +91,7 @@ export class CommentsService {
 			};
 		}
 
-		comment.content = dto.content;
+		comment.updateComment({ content: dto.content });
 
 		const isUpdated = await this.commentsRepository.save(comment);
 
@@ -127,16 +127,7 @@ export class CommentsService {
 			};
 		}
 
-		const likeIndex = comment.likes.findIndex(like => like.userId === userId);
-
-		if (likeStatus === LikeStatus.None) {
-			comment.likes = comment.likes.filter(like => like.userId !== userId);
-		}
-		else if (likeIndex !== -1) {
-			comment.likes[likeIndex].status = likeStatus;
-		} else {
-			comment.likes.push({userId, status: likeStatus});
-		}
+		comment.setLikeStatus({ userId, status: likeStatus });
 
 		await this.commentsRepository.save(comment);
 
@@ -160,7 +151,7 @@ export class CommentsService {
 			};
 		}
 
-		if (deletedEntity?.commentatorInfo.userId !== userId) {
+		if (deletedEntity.commentatorInfo.userId !== userId) {
 			return {
 				status: ResultStatus.Forbidden,
 				errorMessage: "user is incorrect",
@@ -174,7 +165,7 @@ export class CommentsService {
 		if (!isDeleted) {
 			return {
 				status: ResultStatus.NotFound,
-				errorMessage: "comment is not updated",
+				errorMessage: "comment is not deleted",
 				extensions: [],
 				data: null,
 			};

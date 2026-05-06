@@ -1,7 +1,7 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
 import type { CommentatorInfoType } from "../types/comments.commentator-info.type.js";
-import {CreateCommentDto} from "./dto.js";
+import { CreateCommentDto, LikeStatusDto, UpdateCommentDto } from "../types/dto.js";
 
 export enum LikeStatus {
 	None = 'None',
@@ -22,7 +22,11 @@ export type Comment = {
 	likes: Like[];
 };
 
-interface CommentMethods {}
+interface CommentMethods {
+	updateComment(dto: UpdateCommentDto): void;
+
+	setLikeStatus(dto: LikeStatusDto): void;
+}
 
 type CommentStatic = typeof CommentEntity;
 
@@ -58,7 +62,9 @@ class CommentEntity {
 		public likes: Like[],
 	) {}
 
-	static createComment (dto: CreateCommentDto) {
+	//TODO написать тесты для Comment
+
+	static createComment(dto: CreateCommentDto) {
 		const comment = new CommentModel();
 
 		comment.content = dto.content;
@@ -66,6 +72,22 @@ class CommentEntity {
 		comment.commentatorInfo = dto.commentatorInfo;
 
 		return comment;
+	}
+
+	updateComment(dto: UpdateCommentDto) {
+		this.content = dto.content;
+	}
+
+	setLikeStatus(dto: LikeStatusDto) {
+		const likeIndex = this.likes.findIndex(like => like.userId === dto.userId);
+
+		if (dto.status === LikeStatus.None) {
+			this.likes = this.likes.filter(like => like.userId !== dto.userId);
+		} else if (likeIndex !== -1) {
+			this.likes[likeIndex].status = dto.status;
+		} else {
+			this.likes.push({ userId: dto.userId, status: dto.status });
+		}
 	}
 }
 
