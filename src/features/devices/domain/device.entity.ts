@@ -1,7 +1,7 @@
 import type { HydratedDocument, Model } from "mongoose";
 import mongoose, { model } from "mongoose";
-import {ObjectId} from "mongodb";
-import {CreateDeviceDto} from "./dto.js";
+import { ObjectId } from "mongodb";
+import { CreateDeviceDto } from "../types/device.dto.js";
 import dayjs from "dayjs";
 
 export type Device = {
@@ -14,7 +14,8 @@ export type Device = {
 	deviceId: string;
 };
 
-interface DeviceMethods {}
+interface DeviceMethods {
+}
 
 type DeviceStatic = typeof DeviceEntity;
 
@@ -31,7 +32,7 @@ const DeviceSchema = new mongoose.Schema<Device, DeviceModel, DeviceMethods>({
 	deviceId: { type: String, required: true },
 });
 
-class DeviceEntity{
+class DeviceEntity {
 	private constructor(
 		public deviceId: string,
 		public ip: string,
@@ -40,7 +41,7 @@ class DeviceEntity{
 		public userId: string,
 	) {}
 
-	static createDevice (dto: CreateDeviceDto) {
+	static createDevice(dto: CreateDeviceDto) {
 		const device = new DeviceModel();
 
 		device.ip = dto.ip;

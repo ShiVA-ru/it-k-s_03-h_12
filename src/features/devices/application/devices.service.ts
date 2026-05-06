@@ -29,8 +29,6 @@ export class DevicesService {
 			iat
 		});
 
-
-
 		const insertedId = await this.devicesRepository.save(device);
 
 		if (!insertedId) {
