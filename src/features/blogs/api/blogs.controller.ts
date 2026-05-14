@@ -1,10 +1,7 @@
 import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { inject, injectable } from "inversify";
-import type {
-	validationErrorsDto,
-	validationErrorType,
-} from "../../../core/types/errors.types.js";
+import type { validationErrorsDto, validationErrorType, } from "../../../core/types/errors.types.js";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import type { Paginator } from "../../../core/types/paginator.type.js";
 import type {
@@ -22,7 +19,7 @@ import { BlogsService } from "../application/blogs.service.js";
 import { BlogsQueryRepository } from "../infra/blogs.query.repository.js";
 import type { BlogsQueryInput } from "../types/blogs.query.type.js";
 import type { BlogView } from "../types/blogs.view.type.js";
-import {BlogInput} from "../types/blogs.input.type.js";
+import { BlogInput } from "../types/blogs.input.type.js";
 
 @injectable()
 export class BlogsController {
@@ -85,9 +82,11 @@ export class BlogsController {
 				locations: ["query"],
 			});
 
+			const userId = req.userId;
 			const postsListOutput = await this.postsQueryRepository.findByBlogId(
 				blogId,
 				queryData,
+				userId
 			);
 
 			if (!postsListOutput) {

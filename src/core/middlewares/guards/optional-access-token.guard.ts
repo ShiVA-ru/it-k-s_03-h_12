@@ -1,26 +1,28 @@
 import type { NextFunction, Request, Response } from "express";
-import {isSuccessResult} from "../../utils/type-guards.js";
-import {JwtService} from "../../../features/auth/application/jwt.service.js";
-import {container} from "../../../composition-root.js";
+import { isSuccessResult } from "../../utils/type-guards.js";
+import { JwtService } from "../../../features/auth/application/jwt.service.js";
+import { container } from "../../../composition-root.js";
 
 export const optionalAccessTokenGuardMiddleware = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
+	console.log('optionalAccessTokenGuardMiddleware');
 
-    const jwtService = container.get(JwtService);
-    const authHeader = req.headers.authorization;
+	const jwtService = container.get(JwtService);
+	const authHeader = req.headers.authorization;
 
-    if (authHeader?.startsWith("Bearer ")) {
-        const [_, token] = authHeader.split(" ");
+	if (authHeader?.startsWith("Bearer ")) {
+		const [_, token] = authHeader.split(" ");
 
-        const result = await jwtService.verifyAccessToken(token);
+		const result = await jwtService.verifyAccessToken(token);
 
-        if (isSuccessResult(result))  {
-            req.userId = result.data.userId;
-        }
-    }
+		if (isSuccessResult(result)) {
+			req.userId = result.data.userId;
+			console.log(req.userId);
+		}
+	}
 
-    next();
+	next();
 };

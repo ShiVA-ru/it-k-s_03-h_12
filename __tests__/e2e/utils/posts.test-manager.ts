@@ -1,10 +1,7 @@
-import express, { type Express } from "express";
+import { type Express } from "express";
 import request from "supertest";
 import { RouterPath } from "../../../src/core/constants/router.constants.js";
-import {
-	HttpStatus,
-	type HttpStatusType,
-} from "../../../src/core/types/http-statuses.types.js";
+import { HttpStatus, type HttpStatusType, } from "../../../src/core/types/http-statuses.types.js";
 import type { PostInput } from "../../../src/features/posts/types/posts.input.type.js";
 // import { PostView } from "../../../src/features/posts/types/posts.view.type.js";
 // import { setupApp } from "../../../src/setup-app.js";
@@ -36,6 +33,12 @@ export const postsTestManager = {
 				blogId: data.blogId,
 				blogName: expect.any(String),
 				createdAt: expect.any(String),
+				extendedLikesInfo: {
+					dislikesCount: 0,
+					likesCount: 0,
+					myStatus: 'None',
+					newestLikes: []
+				}
 			});
 		}
 

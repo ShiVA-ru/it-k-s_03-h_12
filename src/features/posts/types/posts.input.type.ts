@@ -1,3 +1,6 @@
-import type { PostView } from "./posts.view.type.js";
-
-export type PostInput = Omit<PostView, "id" | "blogName" | "createdAt">;
+export type PostInput = {
+	title: string;
+	shortDescription: string;
+	content: string;
+	blogId: string;
+}

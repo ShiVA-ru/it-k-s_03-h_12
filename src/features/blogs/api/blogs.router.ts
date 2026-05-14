@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { container } from "../../../composition-root.js";
-import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
+import {
+	inputValidationResultMiddleware
+} from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
 import { superAdminGuardMiddleware } from "../../auth/api/middlewares/super-admin.guard.js";
 import { blogPostInputDtoValidation } from "../../posts/api/validation/posts.input-dto.validation.middleware.js";
@@ -8,6 +10,7 @@ import { paginationSortingValidation } from "../../posts/api/validation/posts.qu
 import { blogInputDtoValidation } from "./validation/blogs.input-dto.validation.middleware.js";
 import { paginationSortingSearchValidation } from "./validation/blogs.query.validation.middleware.js";
 import { BlogsController } from "./blogs.controller.js";
+import { optionalAccessTokenGuardMiddleware } from "../../../core/middlewares/guards/optional-access-token.guard.js";
 
 const blogsController = container.get(BlogsController);
 
@@ -55,6 +58,7 @@ blogsRouter
 
 	.get(
 		"/:id/posts",
+		optionalAccessTokenGuardMiddleware,
 		paginationSortingValidation,
 		inputValidationResultMiddleware,
 		blogsController.getBlogsPosts.bind(blogsController),

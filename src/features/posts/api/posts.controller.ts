@@ -24,6 +24,8 @@ import { PostsRepository } from "../infra/posts.repository.js";
 import type { PostInput } from "../types/posts.input.type.js";
 import type { PostsQueryInput } from "../types/posts.query.type.js";
 import type { PostView } from "../types/posts.view.type.js";
+import { LikeStatusInput } from "../../comments/types/likes-status.input.type.js";
+import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
 
 @injectable()
 export class PostsController {
@@ -45,8 +47,13 @@ export class PostsController {
 		res: Response<PostView | validationErrorsDto>,
 	) {
 		try {
+			const userId = req.userId;
+			console.log('================')
+			console.log('userId getPost ', userId);
+			console.log('================')
 			const findEntity = await this.postsQueryRepository.findOneById(
 				req.params.id,
+				userId
 			);
 
 			if (!findEntity) {
@@ -62,13 +69,20 @@ export class PostsController {
 
 	async getPosts(req: Request, res: Response<Paginator<PostView>>) {
 		try {
+			const userId = req.userId;
+			console.log('================')
+			console.log('userId getPosts ', userId);
+			console.log('================')
 			const queryData = matchedData<PostsQueryInput>(req, {
 				locations: ["query"],
 			});
 
 			const postsListOutput =
-				await this.postsQueryRepository.findAll(queryData);
+				await this.postsQueryRepository.findAll(queryData, userId);
 
+			console.log('============================');
+			console.log('postsListOutput', postsListOutput.items.map(post => post.extendedLikesInfo));
+			console.log('============================');
 			res.status(HttpStatus.Ok).json(postsListOutput);
 		} catch (error) {
 			console.error(error);
@@ -183,7 +197,7 @@ export class PostsController {
 			if (updateStatus.notFound) {
 				return res
 					.status(HttpStatus.NotFound)
-					.send({ message: `${updateStatus.entity} not found` });
+					.send({ message: `${ updateStatus.entity } not found` });
 			}
 
 			res.sendStatus(HttpStatus.NoContent);
@@ -207,4 +221,40 @@ export class PostsController {
 			res.sendStatus(HttpStatus.NotFound);
 		}
 	}
+
+	async updateLikeStatus(
+		req: RequestWithParamsBodyUserId<URIParamsId, LikeStatusInput, IdType>,
+		res: Response,
+	) {
+		try {
+			const userId = req.userId;
+			const postId = req.params.id;
+			const likeStatus = req.body.likeStatus;
+
+			if (!userId) {
+				return res.status(HttpStatus.Unauthorized).send({
+					message: `user not found`,
+				});
+			}
+
+			const result = await this.postsService.setLikeStatus(
+				userId,
+				postId,
+				likeStatus,
+			);
+
+			if (!isSuccessResult(result)) {
+				return res.status(resultCodeToHttpException(result.status)).send({
+					message: result.errorMessage ? result.errorMessage : "",
+				});
+			}
+
+			res.sendStatus(HttpStatus.NoContent);
+		} catch (error) {
+			console.error(error);
+			res.sendStatus(HttpStatus.InternalServerError);
+		}
+	}
+
+
 }

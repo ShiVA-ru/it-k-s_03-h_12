@@ -23,9 +23,10 @@ import { UsersService } from "./features/users/application/users.service.js";
 import { UsersQueryRepository } from "./features/users/infra/users.query.repository.js";
 import { UsersRepository } from "./features/users/infra/users.repository.js";
 import { UsersController } from "./features/users/api/users.controller.js";
-import {EmailAdapter} from "./adapters/email.adapter.js";
-import {BcryptService} from "./features/auth/application/bcrypt.service.js";
-import {JwtService} from "./features/auth/application/jwt.service.js";
+import { EmailAdapter } from "./adapters/email.adapter.js";
+import { BcryptService } from "./features/auth/application/bcrypt.service.js";
+import { JwtService } from "./features/auth/application/jwt.service.js";
+import { PostsLikesRepository } from "./features/posts/infra/posts-likes.repository.js";
 
 export const container: Container = new Container();
 
@@ -38,6 +39,7 @@ container.bind(CommentsQueryRepository).toSelf();
 
 container.bind(PostsRepository).toSelf();
 container.bind(PostsQueryRepository).toSelf();
+container.bind(PostsLikesRepository).toSelf();
 
 container.bind(BlogsRepository).toSelf();
 container.bind(BlogsQueryRepository).toSelf();

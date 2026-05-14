@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { container } from "../../../composition-root.js";
-import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
+import {
+	inputValidationResultMiddleware
+} from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
 import { accessTokenGuardMiddleware } from "../../auth/api/middlewares/access-token.guard.js";
 import { superAdminGuardMiddleware } from "../../auth/api/middlewares/super-admin.guard.js";
@@ -8,7 +10,10 @@ import { commentInputDtoValidation } from "../../comments/api/validation/comment
 import { postInputDtoValidation } from "./validation/posts.input-dto.validation.middleware.js";
 import { paginationSortingValidation } from "./validation/posts.query.validation.middleware.js";
 import { PostsController } from "./posts.controller.js";
-import {optionalAccessTokenGuardMiddleware} from "../../../core/middlewares/guards/optional-access-token.guard.js";
+import { optionalAccessTokenGuardMiddleware } from "../../../core/middlewares/guards/optional-access-token.guard.js";
+import {
+	likeStatusInputDtoValidation
+} from "../../comments/api/validation/likes-status.input-dto.validation.middleware.js";
 
 const postsController = container.get(PostsController);
 
@@ -28,6 +33,7 @@ postsRouter
 	//READ
 	.get(
 		"/",
+		optionalAccessTokenGuardMiddleware,
 		paginationSortingValidation,
 		inputValidationResultMiddleware,
 		postsController.getPosts.bind(postsController),
@@ -35,6 +41,7 @@ postsRouter
 
 	.get(
 		"/:id",
+		optionalAccessTokenGuardMiddleware,
 		idValidation,
 		inputValidationResultMiddleware,
 		postsController.getPost.bind(postsController),
@@ -72,4 +79,14 @@ postsRouter
 		commentInputDtoValidation,
 		inputValidationResultMiddleware,
 		postsController.createPostComment.bind(postsController),
-	);
+	)
+	//Update like-status
+	.put(
+		"/:id/like-status",
+		accessTokenGuardMiddleware,
+		idValidation,
+		likeStatusInputDtoValidation,
+		inputValidationResultMiddleware,
+		postsController.updateLikeStatus.bind(postsController),
+	)
+;

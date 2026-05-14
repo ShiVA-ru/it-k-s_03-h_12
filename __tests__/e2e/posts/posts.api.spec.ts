@@ -67,6 +67,8 @@ describe("tests for /posts", () => {
 
 		createdEntity1 = createdEntity;
 
+		console.log(createdEntity1);
+
 		await request(app)
 			.get(RouterPath.posts)
 			.expect(200, {
